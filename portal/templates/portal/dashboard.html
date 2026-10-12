@@ -1,0 +1,175 @@
+{% extends 'portal/base.html' %}
+
+{% block title %}Dashboard | Event Portal{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <div>
+            <p class="eyebrow mb-1">My Space</p>
+            <h2 class="fw-bold mb-1">My Dashboard</h2>
+            <p class="text-muted mb-0">Welcome, {{ user.get_full_name|default:user.username }}.</p>
+        </div>
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{% url 'holo_lab' %}" class="btn btn-dark">Open Holo Lab</a>
+            <a href="{% url 'profile' %}" class="btn btn-primary">Edit Profile</a>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="metric-card success">
+                <div class="metric-label">Shortlisted</div>
+                <div class="metric-value">{{ registration_status_counts.selected }}</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="metric-card warning">
+                <div class="metric-label">Waitlist</div>
+                <div class="metric-value">{{ registration_status_counts.waitlist }}</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="metric-card info">
+                <div class="metric-label">Registrations</div>
+                <div class="metric-value">{{ user_registrations|length }}</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="metric-card primary">
+                <div class="metric-label">Organizer</div>
+                <div class="metric-value">{% if organizer_profile %}Yes{% else %}No{% endif %}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-lg-7">
+            <div class="card chart-card h-100">
+                <div class="card-body">
+                    <h4 class="fw-bold mb-3">Event Category Demand</h4>
+                    {% if category_counts %}
+                    <div class="chart-list">
+                        {% for item in category_counts %}
+                        <div class="chart-row">
+                            <div class="chart-label">{{ item.name }}</div>
+                            <div class="chart-track">
+                                <div class="chart-bar" style="width: {{ item.width }}%;"></div>
+                            </div>
+                            <div class="chart-value">{{ item.count }}</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info mb-0">No event data available yet.</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="card chart-card h-100">
+                <div class="card-body">
+                    <h4 class="fw-bold mb-3">My Event Attendance</h4>
+                    {% if user_registrations %}
+                    <ul class="list-group list-group-flush">
+                        {% for registration in user_registrations %}
+                        <li class="list-group-item px-0">
+                            <div class="d-flex justify-content-between align-items-center gap-2">
+                                <div>
+                                    <div class="fw-bold">{{ registration.event.title }}</div>
+                                    <small class="text-muted">{{ registration.status }}</small>
+                                </div>
+                                {% if registration.certificate and registration.certificate.certificate_file %}
+                                <a href="{% url 'download_certificate' registration.certificate.id %}" class="btn btn-sm btn-success">Download Certificate</a>
+                                {% else %}
+                                <span class="badge bg-warning text-dark">Certificate pending</span>
+                                {% endif %}
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <div class="alert alert-info mb-0">You have not registered for any events yet.</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0 rounded-4 mb-4 accent-panel">
+        <div class="card-body">
+            <h4 class="fw-bold mb-3">My Certificates</h4>
+            {% if my_certificates %}
+            <div class="row g-3">
+                {% for certificate in my_certificates %}
+                <div class="col-md-6 col-xl-4">
+                    <div class="border rounded-4 p-3 h-100 certificate-card">
+                        <div class="fw-bold mb-1">{{ certificate.event.title }}</div>
+                        <div class="text-muted small mb-3">{{ certificate.event.event_date }}</div>
+                        <a href="{% url 'download_certificate' certificate.id %}" class="btn btn-primary btn-sm">Download</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="alert alert-info mb-0">No certificate has been uploaded for you yet. The organizer will upload it after the event.</div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <div class="card shadow-sm border-0 rounded-4 h-100 accent-panel">
+                <div class="card-body">
+                    <h4 class="fw-bold mb-3">Upcoming Events</h4>
+                    {% if events %}
+                    <div class="list-group list-group-flush">
+                        {% for event in events %}
+                        <div class="list-group-item px-0">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1 fw-bold">{{ event.title }}</h6>
+                                    <small class="text-muted">{{ event.event_date }} • {{ event.location }}</small>
+                                </div>
+                                <a href="{% url 'event_detail' event.id %}" class="btn btn-sm btn-outline-primary">View</a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info mb-0">No upcoming events found.</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {% if organizer_profile %}
+        <div class="col-lg-5">
+            <div class="card shadow-sm border-0 rounded-4 h-100 accent-panel">
+                <div class="card-body">
+                    <h4 class="fw-bold mb-3">Organizer Events</h4>
+                    {% if organizer_events %}
+                    <div class="list-group list-group-flush">
+                        {% for event in organizer_events %}
+                        <div class="list-group-item px-0">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="fw-bold">{{ event.title }}</div>
+                                    <small class="text-muted">{{ event.selected_count }}/{{ event.capacity }} selected</small>
+                                </div>
+                                <a href="{% url 'edit_event' event.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info mb-0">No events created yet.</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

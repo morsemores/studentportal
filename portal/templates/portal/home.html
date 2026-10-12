@@ -1,0 +1,84 @@
+{% extends 'portal/base.html' %}
+{% load static %}
+
+{% block title %}Home | Event Calendar Portal{% endblock %}
+
+{% block content %}
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center min-vh-75 py-5 g-4">
+            <div class="col-lg-7">
+                <span class="badge bg-light text-primary px-3 py-2 rounded-pill fw-semibold shadow-sm">Events That Matter</span>
+                <h1 class="display-4 fw-black mb-3 hero-title">Discover unforgettable events near you.</h1>
+                <p class="lead text-secondary mb-4 hero-copy">
+                    Browse live campus events, reserve your place, get shortlisted instantly, or join the waitlist when a session is full.
+                </p>
+                <div class="d-flex gap-3 flex-wrap mb-4">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'profile' %}" class="btn btn-primary btn-lg shadow-sm">View Your Profile</a>
+                    {% else %}
+                        <a href="{% url 'register' %}" class="btn btn-primary btn-lg shadow-sm">Create Account</a>
+                    {% endif %}
+                    <a href="{% url 'events_list' %}" class="btn btn-outline-primary btn-lg">Browse Events</a>
+                </div>
+                <div class="hero-mini-stats d-flex flex-wrap gap-3">
+                    <div class="mini-stat"><strong>24/7</strong><span>Event access</span></div>
+                    <div class="mini-stat"><strong>Fast</strong><span>Shortlist flow</span></div>
+                    <div class="mini-stat"><strong>Live</strong><span>Attendance updates</span></div>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="hero-visual-wrap">
+                    <img src="{% static 'images/hero-illustration.svg' %}" alt="Event management illustration" class="hero-illustration">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="container pb-5 pt-5">
+    <div class="section-heading text-center mb-4">
+        <p class="eyebrow">Featured Experiences</p>
+        <h2 class="fw-bold mb-2">Upcoming Events</h2>
+    </div>
+    <div class="row g-4">
+        {% for event in events %}
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm rounded-4 event-visual-card reveal-card">
+                {% if event.cover_image %}
+                <img src="{{ event.cover_image.url }}" class="event-cover-image" alt="{{ event.title }} cover image">
+                {% else %}
+                <div class="event-cover-placeholder">
+                    <span>{{ event.title }}</span>
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2 gap-2">
+                        <span class="badge bg-primary-subtle text-primary fw-semibold">{{ event.category }}</span>
+                        <span class="status-pill {% if event.is_full %}full{% else %}published{% endif %}">{% if event.is_full %}Full{% else %}Open{% endif %}</span>
+                    </div>
+                    <h5 class="card-title fw-bold">{{ event.title }}</h5>
+                    <p class="card-text text-secondary">{{ event.description|truncatechars:100 }}</p>
+                    <div class="detail-stack small text-muted">
+                        <div><strong>Date:</strong> {{ event.event_date }}</div>
+                        <div><strong>Location:</strong> {{ event.location }}</div>
+                        <div><strong>Capacity:</strong> {{ event.selected_count }}/{{ event.capacity }}</div>
+                    </div>
+                    <a href="{% url 'event_detail' event.id %}" class="btn btn-primary mt-3 w-100">View Event</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">No upcoming events are available right now.</div>
+        </div>
+        {% endfor %}
+
+        {% if has_more_events %}
+        <div class="col-12 text-center mt-3">
+            <a href="{% url 'events_list' %}" class="btn btn-outline-primary btn-lg">View More →</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

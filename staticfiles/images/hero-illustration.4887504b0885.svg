@@ -1,0 +1,35 @@
+<svg width="720" height="520" viewBox="0 0 720 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="100" y1="40" x2="620" y2="480" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#EEF4FF"/>
+      <stop offset="1" stop-color="#E7FFF7"/>
+    </linearGradient>
+    <linearGradient id="card" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#3D5AF1"/>
+      <stop offset="1" stop-color="#6CC8FF"/>
+    </linearGradient>
+    <linearGradient id="green" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#1ED7A6"/>
+      <stop offset="1" stop-color="#47D9AB"/>
+    </linearGradient>
+  </defs>
+  <rect width="720" height="520" rx="40" fill="url(#bg)"/>
+  <circle cx="559" cy="122" r="72" fill="#D9E8FF"/>
+  <circle cx="180" cy="432" r="95" fill="#DDFBF4"/>
+  <path d="M84 328C135 264 215 217 325 217C433 217 497 264 611 230V457H84V328Z" fill="#E2EBFF"/>
+  <rect x="126" y="120" width="224" height="212" rx="26" fill="white"/>
+  <rect x="151" y="149" width="120" height="15" rx="7.5" fill="#DBE5FF"/>
+  <rect x="151" y="178" width="165" height="13" rx="6.5" fill="#EAF0FF"/>
+  <rect x="151" y="201" width="145" height="13" rx="6.5" fill="#EAF0FF"/>
+  <rect x="151" y="240" width="82" height="52" rx="18" fill="url(#card)"/>
+  <rect x="245" y="240" width="82" height="52" rx="18" fill="url(#green)"/>
+  <rect x="420" y="164" width="180" height="136" rx="28" fill="white"/>
+  <rect x="448" y="197" width="126" height="13" rx="6.5" fill="#E9F0FF"/>
+  <rect x="448" y="223" width="92" height="13" rx="6.5" fill="#E9F0FF"/>
+  <path d="M454 269C480 249 515 241 553 248C574 252 595 262 609 278V286H454V269Z" fill="#E9F3FF"/>
+  <rect x="454" y="289" width="118" height="11" rx="5.5" fill="#DCEBFF"/>
+  <circle cx="445" cy="370" r="34" fill="#E9F5FF"/>
+  <circle cx="568" cy="388" r="42" fill="#EAFCF5"/>
+  <path d="M445 371L457 381L475 356" stroke="#2F6CF6" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M532 390C548 374 568 366 592 370C593 385 589 398 572 409C558 418 541 420 528 417L532 390Z" fill="#1ED7A6"/>
+</svg>

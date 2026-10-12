@@ -1,0 +1,16 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Holocloth</title>
+    <link rel="stylesheet" href="{% static 'holocloth/index-CE1qk9yk.css' %}">
+    <link rel="stylesheet" href="{% static 'css/holocloth_local.css' %}">
+</head>
+<body class="holocloth-body">
+    <a class="holocloth-dashboard-link" href="{% url 'dashboard' %}">← Dashboard</a>
+    <div id="root"></div>
+    <script type="module" src="{% static 'holocloth/index-7o2sso0D.js' %}"></script>
+</body>
+</html>

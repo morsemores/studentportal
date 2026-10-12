@@ -1,0 +1,72 @@
+{% extends 'portal/base.html' %}
+
+{% block title %}Certificates for {{ event.title }} | Event Portal{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Certificates for {{ event.title }}</h2>
+            <p class="text-muted mb-0">Upload a certificate for each registered member individually.</p>
+        </div>
+        <a href="{% url 'organizer_dashboard' %}" class="btn btn-outline-secondary">Back to Dashboard</a>
+    </div>
+
+    {% if registrations %}
+    <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Status</th>
+                            <th>Certificate</th>
+                            <th>Upload</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for registration in registrations %}
+                        <tr>
+                            <td>
+                                <div class="fw-bold">{{ registration.user.get_full_name|default:registration.user.username }}</div>
+                                <div class="small text-muted">{{ registration.user.email }}</div>
+                            </td>
+                            <td>
+                                {% if registration.status == 'selected' %}
+                                <span class="badge bg-success-subtle text-success">Shortlisted</span>
+                                {% elif registration.status == 'waitlist' %}
+                                <span class="badge bg-warning text-dark">Waitlisted</span>
+                                {% else %}
+                                <span class="badge bg-secondary-subtle text-secondary">Cancelled</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if registration.certificate and registration.certificate.certificate_file %}
+                                <a href="{% url 'download_certificate' registration.certificate.id %}" class="btn btn-sm btn-success">Download</a>
+                                {% else %}
+                                <span class="text-muted">Not uploaded yet</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <form method="post" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="user_id" value="{{ registration.user.id }}">
+                                    <div class="d-flex gap-2 align-items-center flex-wrap">
+                                        <input type="file" name="certificate_file" class="form-control" accept=".pdf,.png,.jpg,.jpeg" required>
+                                        <button type="submit" class="btn btn-primary btn-sm">Upload</button>
+                                    </div>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info">No registered members for this event yet.</div>
+    {% endif %}
+</div>
+{% endblock %}

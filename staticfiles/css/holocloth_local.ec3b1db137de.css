@@ -1,0 +1,116 @@
+@font-face {
+    font-family: 'Geist Mono';
+    font-style: normal;
+    font-weight: 100;
+    font-display: swap;
+    src: url("../holocloth/geist-mono-100.5271bf8e7779.ttf") format('truetype');
+}
+
+@font-face {
+    font-family: 'Geist Mono';
+    font-style: normal;
+    font-weight: 200;
+    font-display: swap;
+    src: url("../holocloth/geist-mono-200.15f1af1b88ff.ttf") format('truetype');
+}
+
+@font-face {
+    font-family: 'Geist Mono';
+    font-style: normal;
+    font-weight: 300;
+    font-display: swap;
+    src: url("../holocloth/geist-mono-300.9e8c6918dd68.ttf") format('truetype');
+}
+
+@font-face {
+    font-family: 'Geist Mono';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url("../holocloth/geist-mono-400.d5f1922e4847.ttf") format('truetype');
+}
+
+@font-face {
+    font-family: 'Geist Mono';
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url("../holocloth/geist-mono-500.966e9cbfed5a.ttf") format('truetype');
+}
+
+@font-face {
+    font-family: 'Geist Mono';
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url("../holocloth/geist-mono-600.a5f278758007.ttf") format('truetype');
+}
+
+@font-face {
+    font-family: 'Geist Mono';
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url("../holocloth/geist-mono-700.7d3571096e63.ttf") format('truetype');
+}
+
+@font-face {
+    font-family: 'Geist Mono';
+    font-style: normal;
+    font-weight: 800;
+    font-display: swap;
+    src: url("../holocloth/geist-mono-800.fd1e0b34a9c1.ttf") format('truetype');
+}
+
+@font-face {
+    font-family: 'Geist Mono';
+    font-style: normal;
+    font-weight: 900;
+    font-display: swap;
+    src: url("../holocloth/geist-mono-900.bb55b55dea95.ttf") format('truetype');
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: #050508;
+}
+
+.holocloth-body #root {
+    width: 100%;
+    height: 100%;
+}
+
+#canvas-host {
+    position: fixed;
+    inset: 0;
+}
+
+#canvas-host canvas {
+    display: block;
+    touch-action: none;
+}
+
+.holocloth-dashboard-link {
+    position: fixed;
+    top: 14px;
+    left: 15px;
+    z-index: 2147483500;
+    padding: 7px 10px;
+    border: 1px solid rgba(255, 255, 255, .13);
+    background: rgba(5, 5, 8, .72);
+    color: rgba(245, 245, 248, .74);
+    font: 11px ui-sans-serif, system-ui, sans-serif;
+    text-decoration: none;
+    backdrop-filter: blur(8px);
+}
+
+.holocloth-dashboard-link:hover,
+.holocloth-dashboard-link:focus-visible {
+    border-color: rgba(255, 255, 255, .4);
+    color: #fff;
+}

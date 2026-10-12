@@ -1,0 +1,40 @@
+{% extends 'portal/base.html' %}
+
+{% block title %}Timetable | Student Portal{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="fw-bold mb-4">My Timetable</h2>
+    <div class="row g-4">
+        {% for day, entries in schedule.items %}
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 rounded-4 h-100">
+                <div class="card-body">
+                    <h5 class="fw-bold text-primary mb-3">{{ day }}</h5>
+                    {% if entries %}
+                    <div class="list-group list-group-flush">
+                        {% for item in entries %}
+                        <div class="list-group-item px-0">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <div class="fw-bold">{{ item.course.name }}</div>
+                                    <small class="text-muted">{{ item.course.code }}</small>
+                                </div>
+                                <span class="badge bg-primary-subtle text-primary">{{ item.venue }}</span>
+                            </div>
+                            <div class="mt-2 text-muted small">
+                                {{ item.start_time|time:"H:i" }} - {{ item.end_time|time:"H:i" }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-muted mb-0">No classes scheduled.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,140 @@
+{% extends 'portal/base.html' %}
+
+{% block title %}Organizer Dashboard | Event Portal{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <div>
+            <h2 class="fw-bold mb-1">Organizer Dashboard</h2>
+            <p class="text-muted mb-0">Manage your events and participant registrations.</p>
+        </div>
+        <a href="{% url 'create_event' %}" class="btn btn-success">Create Event</a>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="metric-card primary">
+                <div class="metric-label">Events</div>
+                <div class="metric-value">{{ organizer_events|length }}</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="metric-card success">
+                <div class="metric-label">Shortlisted</div>
+                <div class="metric-value">{{ total_registrations }}</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="metric-card warning">
+                <div class="metric-label">Waitlist</div>
+                <div class="metric-value">{{ waitlist_count }}</div>
+            </div>
+        </div>
+    </div>
+
+    {% if event_requests %}
+    <div class="card shadow-sm border-0 rounded-4 mb-4 organizer-panel">
+        <div class="card-body">
+            <h4 class="fw-bold mb-3">Pending Event Requests</h4>
+            {% for request in event_requests %}
+            <div class="card request-card mb-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                        <div>
+                            <h6 class="fw-bold mb-1">{{ request.title }}</h6>
+                            <div class="text-muted small">By {{ request.user.get_full_name|default:request.user.username }} • {{ request.category }} • {{ request.preferred_date|default:'Flexible' }}</div>
+                        </div>
+                        <span class="badge bg-warning text-dark">{{ request.status }}</span>
+                    </div>
+                    <p class="mt-3 mb-2">{{ request.description }}</p>
+                    <div class="small text-muted mb-3">Location: {{ request.location|default:'To be decided' }}</div>
+                    <div class="d-flex gap-2">
+                        <a href="{% url 'update_event_request' request.id 'approve' %}" class="btn btn-success btn-sm">Approve</a>
+                        <a href="{% url 'update_event_request' request.id 'reject' %}" class="btn btn-outline-danger btn-sm">Reject</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if organizer_events %}
+    <div class="row g-4 mb-4">
+        <div class="col-12">
+            <div class="card chart-card">
+                <div class="card-body">
+                    <h4 class="fw-bold mb-3">Event Capacity Overview</h4>
+                    <div class="chart-list">
+                        {% for item in event_capacity_data %}
+                        <div class="chart-row">
+                            <div class="chart-label">{{ item.name }}</div>
+                            <div class="chart-track">
+                                <div class="chart-bar capacity" style="width: {{ item.width }}%;"></div>
+                            </div>
+                            <div class="chart-value">{{ item.count }}/{{ item.capacity }}</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-body">
+            <h4 class="fw-bold mb-3">Your Events</h4>
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Date</th>
+                            <th>Capacity</th>
+                            <th>Selected</th>
+                            <th>Waitlist</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for event in organizer_events %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <span>{{ event.title }}</span>
+                                    {% if event.is_published %}
+                                    <span class="badge bg-success-subtle text-success">Published</span>
+                                    {% else %}
+                                    <span class="badge bg-secondary-subtle text-secondary">Draft</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td>{{ event.event_date }}</td>
+                            <td>{{ event.capacity }}</td>
+                            <td>{{ event.selected_count }}</td>
+                            <td>{{ event.waitlist_count }}</td>
+                            <td>
+                                <div class="d-flex gap-2 flex-wrap">
+                                    <a href="{% url 'event_detail' event.id %}" class="btn btn-sm btn-outline-primary">View</a>
+                                    <a href="{% url 'event_analytics' event.id %}" class="btn btn-sm btn-outline-dark">Analytics</a>
+                                    <a href="{% url 'edit_event' event.id %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                                    <a href="{% url 'manage_event_certificates' event.id %}" class="btn btn-sm btn-outline-success">Certificates</a>
+                                    <form method="post" action="{% url 'delete_event' event.id %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this event?')">Delete</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info">You have not created any events yet.</div>
+    {% endif %}
+</div>
+{% endblock %}

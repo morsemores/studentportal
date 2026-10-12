@@ -1,0 +1,131 @@
+{% extends 'portal/base.html' %}
+
+{% block title %}Event Analytics | Event Portal{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+        <div>
+            <p class="text-uppercase text-muted fw-semibold mb-1 letter-spacing">Analytics</p>
+            <h2 class="fw-bold mb-1">{{ event.title }}</h2>
+            <p class="text-muted mb-0">Owner-only analytics dashboard for this event.</p>
+        </div>
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{% url 'organizer_dashboard' %}" class="btn btn-outline-secondary">Back to Dashboard</a>
+            <a href="{% url 'manage_event_certificates' event.id %}" class="btn btn-success">Certificates</a>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0 rounded-4 p-3 analytics-shell">
+        <div class="card-body p-1 p-md-3">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+                <h4 class="fw-bold mb-0">Analytics Overview</h4>
+                <span class="badge bg-light text-dark border">{{ event.event_date }}</span>
+            </div>
+
+            <div class="row g-3 mb-4">
+                <div class="col-md-3 col-sm-6">
+                    <div class="metric-card primary h-100">
+                        <div class="metric-label">Total Reg.</div>
+                        <div class="metric-value">{{ total_registrations }}</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="metric-card success h-100">
+                        <div class="metric-label">Shortlisted</div>
+                        <div class="metric-value">{{ shortlisted_count }}</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="metric-card warning h-100">
+                        <div class="metric-label">Waitlist</div>
+                        <div class="metric-value">{{ waitlist_count }}</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="metric-card info h-100">
+                        <div class="metric-label">Attendance</div>
+                        <div class="metric-value">{{ attendance_rate }}%</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-7">
+                    <div class="card border rounded-4 h-100 analytics-panel">
+                        <div class="card-body">
+                            <h6 class="fw-bold mb-3">Registration Status</h6>
+                            <div class="d-flex flex-column gap-3">
+                                {% for item in status_summary %}
+                                <div>
+                                    <div class="d-flex justify-content-between small text-muted mb-1">
+                                        <span>{{ item.label }}</span>
+                                        <span>{{ item.count }}</span>
+                                    </div>
+                                    <div class="progress" style="height: 12px;">
+                                        <div class="progress-bar bg-{% if item.color == 'primary' %}primary{% elif item.color == 'warning' %}warning{% else %}danger{% endif %}"
+                                             role="progressbar"
+                                             style="width: {{ item.percent }}%;"
+                                             aria-valuenow="{{ item.percent }}"
+                                             aria-valuemin="0"
+                                             aria-valuemax="100">
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-5">
+                    <div class="card border rounded-4 h-100 analytics-panel">
+                        <div class="card-body text-center">
+                            <h6 class="fw-bold mb-3">Capacity Usage</h6>
+                            <div class="mx-auto position-relative" style="width: 180px; height: 180px;">
+                                <div class="donut-chart" style="--value: {{ capacity_utilization|floatformat:0 }}; --track: #eaf0ff; --fill: #3d5af1;"></div>
+                                <div class="position-absolute top-50 start-50 translate-middle text-center">
+                                    <div class="fw-bold fs-4">{{ capacity_utilization }}%</div>
+                                    <div class="text-muted small">Used</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card border rounded-4 mt-4 analytics-panel">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-3">Monthly Registration Trend</h6>
+                    {% if has_registration_data %}
+                    <svg viewBox="0 0 700 220" width="100%" height="220" class="analytics-chart">
+                        <line x1="40" y1="180" x2="680" y2="180" stroke="#8aa4ff" stroke-width="1.4"/>
+                        <line x1="40" y1="30" x2="40" y2="180" stroke="#8aa4ff" stroke-width="1.4"/>
+                        {% for label in monthly_labels %}
+                        <text x="{{ forloop.counter0|add:95 }}" y="200" text-anchor="middle" fill="#7b8196" font-size="10">{{ label }}</text>
+                        {% endfor %}
+                        {% for value in monthly_values %}
+                        <text x="30" y="{{ forloop.counter0|add:165 }}" text-anchor="end" fill="#7b8196" font-size="10">{{ value }}</text>
+                        {% endfor %}
+                        <polyline
+                            fill="none"
+                            stroke="#2f5df6"
+                            stroke-width="2.5"
+                            points="{% for point in chart_points %}{{ point }}{% if not forloop.last %} {% endif %}{% endfor %}"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"/>
+                    </svg>
+                    {% else %}
+                    <div class="d-flex align-items-center justify-content-center text-center text-muted border rounded-4 bg-light" style="min-height: 220px;">
+                        <div>
+                            <div class="fw-semibold mb-2 text-dark">No registrations yet</div>
+                            <small>Once participants register for this event, the trend chart will appear here.</small>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

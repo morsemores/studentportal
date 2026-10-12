@@ -1,0 +1,75 @@
+{% extends 'portal/base.html' %}
+
+{% block title %}Events | Event Portal{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+        <div>
+            <p class="eyebrow mb-1">Discover More</p>
+            <h2 class="fw-bold mb-0">All Events</h2>
+        </div>
+        <a href="{% url 'request_event' %}" class="btn btn-outline-primary">Request an Event</a>
+    </div>
+
+    <div class="search-panel mb-4">
+        <form method="get" class="row g-3 align-items-end">
+            <div class="col-md-5">
+                <label class="form-label fw-semibold">Search by title, location or keyword</label>
+                <input id="event-search" type="text" name="q" value="{{ query }}" class="form-control" placeholder="Search events...">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">Category</label>
+                <input type="text" name="category" value="{{ category }}" class="form-control" placeholder="Custom category search">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">Date</label>
+                <input type="date" name="date" value="{{ selected_date }}" class="form-control">
+            </div>
+            <div class="col-md-1 d-grid">
+                <button type="submit" class="btn btn-primary">Filter</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="row g-4">
+        {% for event in events %}
+        <div class="col-md-6 col-xl-4 event-card reveal-card">
+            <div class="card shadow-sm border-0 rounded-4 h-100 event-visual-card">
+                {% if event.cover_image %}
+                <img src="{{ event.cover_image.url }}" class="event-cover-image" alt="{{ event.title }} cover image">
+                {% else %}
+                <div class="event-cover-placeholder">
+                    <span>{{ event.title }}</span>
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2 gap-2">
+                        <span class="badge bg-primary-subtle text-primary fw-semibold">{{ event.category }}</span>
+                        <span class="status-pill {% if event.is_full %}full{% else %}published{% endif %}">{% if event.is_full %}Full{% else %}Open{% endif %}</span>
+                    </div>
+                    <h5 class="fw-bold">{{ event.title }}</h5>
+                    <p class="text-secondary">{{ event.description|truncatechars:120 }}</p>
+                    <div class="small text-muted detail-stack mb-3">
+                        <div><strong>Date:</strong> {{ event.event_date }}</div>
+                        <div><strong>Time:</strong> {{ event.start_time }} - {{ event.end_time }}</div>
+                        <div><strong>Location:</strong> {{ event.location }}</div>
+                        <div><strong>Capacity:</strong> {{ event.selected_count }}/{{ event.capacity }}</div>
+                    </div>
+                    <a href="{% url 'event_detail' event.id %}" class="btn btn-primary w-100">View Details</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                No matching events were found. You can request this event type and the organizers will review it.
+                <div class="mt-3">
+                    <a href="{% url 'request_event' %}" class="btn btn-primary">Request Event</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
